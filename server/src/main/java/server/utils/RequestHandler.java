@@ -6,6 +6,7 @@ import common.functional.ServerResponseCode;
 import server.commands.Command;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class RequestHandler {
@@ -18,10 +19,6 @@ public class RequestHandler {
     public Response handle(Request request) {
         commandName = request.getCommandName().trim();
         commandArgument = request.getCommandStringArgument();
-//        System.out.println("clooo: "+ commandArgument);
-//        if (Objects.equals(commandName, "close")){
-//            return new Response(ServerResponseCode.CLOSE, null);
-//        }
         try {
             HashMap<String, Command> commandHashMap = commandControl.getMapping();
             if (!commandHashMap.containsKey(commandName)) {
@@ -35,6 +32,8 @@ public class RequestHandler {
 
         }catch (WrongArgumentsException | FileNotFoundException e){
             return null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return new Response(ServerResponseCode.OK, ResponseOutputer.getAndClear());
     }

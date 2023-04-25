@@ -4,24 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Scanner;
 
-/**
 
- The Organization class represents an organization, containing information about its full name,
-
- annual turnover, and number of employees.
- */
-public class Organization {
+public class Organization implements Serializable {
     private String fullName; //Длина строки не должна быть больше 1516, Строка не может быть пустой, Поле не может быть null
     private int annualTurnover; //Значение поля должно быть больше 0
     private int employeesCount; //Значение поля должно быть больше 0
 
-    /**
 
-     Constructs an Organization object with the specified full name, annual turnover, and number of employees.
-     @param fullName the full name of the organization
-     @param annualTurnover the annual turnover of the organization
-     @param employeesCount the number of employees in the organization
-     */
     public Organization (@JsonProperty("fullName") String fullName, @JsonProperty("annualTurnover") int annualTurnover,
                          @JsonProperty("employeesCount") int employeesCount){
         this.fullName = fullName;
@@ -43,12 +32,7 @@ public class Organization {
         return fullName;
     }
 
-    /**
 
-     Sets the full name of the organization.
-     @param fullName the full name of the organization
-     @throws IllegalArgumentException if the full name is empty or null, or has a length greater than 1516
-     */
     public void setFullName(String fullName) {
         if (fullName.isBlank()){
             this.fullName = null;
@@ -61,12 +45,7 @@ public class Organization {
 
     }
 
-    /**
 
-     Sets the annual turnover of the organization.
-     @param scan a Scanner object used to read user input
-     @throws IllegalArgumentException if the user input is empty, not a number, or less than or equal to 0
-     */
  public void setAnnualTurnover(Scanner scan) {
         String  annualTurnover;
         annualTurnover = scan.nextLine();
@@ -82,12 +61,7 @@ public class Organization {
         }
         //this.annualTurnover = Integer.parseInt(annualTurnover);
     }
-/**
 
- Sets the number of employees in the organization.
- @param scan a Scanner object used to read user input
- @throws IllegalArgumentException if the user input is empty, not a number, or less than or equal to 0
- */
     public void setEmployeesCount(Scanner scan) {
         String employeesCount;
         employeesCount = scan.nextLine();

@@ -1,14 +1,12 @@
-package commands;
-
+package server.commands;
 
 /**
  * This class represents a command that exits the application.
  */
-public class Exit implements Command{
-
-    /**
-     * Executes the exit command, printing a message and terminating the application.
-     */
+public class Exit implements Command {
+    Loader loader;
+    public Exit(Loader loader){this.loader = loader;}
+    public Exit(){}
     @Override
     public void execute()  {
         System.out.println("Вы вышли из приложения. До новых встреч!");
@@ -23,6 +21,11 @@ public class Exit implements Command{
     public String toString(){
         return "exit : завершить программу (без сохранения в файл)";
     }
+    @Override
+    public String toString(){
+        return "exit : завершить программу (без сохранения в файл)";
+    }
+
 
 
 }

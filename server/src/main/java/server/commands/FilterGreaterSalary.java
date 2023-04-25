@@ -1,16 +1,16 @@
-package commands;
-
-import worker.Worker;
-import static support.Loader.repo;
+package server.commands;
+import common.exceptions.WrongArgumentsException;
+import server.utils.Loader;
+import server.utils.ResponseOutputer;
 
 /**
 
- The FilterGreaterSalary class implements the ArgumentCommand interface and represents a command that filters
-
- the collection and prints all workers with a salary greater than the specified value.
- */
-public class FilterGreaterSalary implements ArgumentCommand{
-    private int salary;
+public class FilterGreaterSalary implements Command {
+    Loader loader;
+    public FilterGreaterSalary(Loader loader){
+        this.loader = loader;
+    }
+    public FilterGreaterSalary(){}
 
     /**
 

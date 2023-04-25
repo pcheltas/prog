@@ -1,16 +1,17 @@
-package commands;
+package server.commands;
 
-/**
- The Help class implements the Command interface and represents the command that shows the list of available commands.
- */
-public class Help implements Command{
+import server.utils.Loader;
+import server.utils.ResponseOutputer;
 
-    /**
-     Executes the Help command and prints the list of available commands with their descriptions.
-     */
+public class Help implements Command {
+    Loader loader;
+    public Help(Loader loader) {
+        this.loader = loader;
+    }
+
     @Override
-    public void execute(){
-        System.out.println(
+    public void execute(String argument, Object commandObjectArgument){
+        ResponseOutputer.appendln(
         new Info().toString() + "\n" +
         new Show().toString() + "\n" +
         new Insert().toString() + "\n" +

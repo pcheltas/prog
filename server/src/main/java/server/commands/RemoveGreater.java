@@ -1,38 +1,44 @@
-package commands;
+package server.commands;
 
-import worker.Worker;
 
-import static support.Loader.repo;
+import common.data.Worker;
+import common.exceptions.WrongArgumentsException;
+import common.functional.WorkerPacket;
+import server.utils.Loader;
+import server.utils.ResponseOutputer;
 
-/**
+import static common.data.Worker.getCounter;
 
- The RemoveGreater class implements the Command interface.
-
- This command removes the elements of the collection that are greater than the specified element.
- */
 public class RemoveGreater implements Command{
-    /**
+    Loader loader;
 
-     Executes the command to remove the elements that are greater than the specified element.
-     Creates a new worker instance using ConsoleCreation class and compares it to each worker in the collection.
-     If the current worker in the collection is less than the new worker, removes the current worker from the collection.
-     */
+    public RemoveGreater(Loader loader){
+        this.loader = loader;
+    }
+    public RemoveGreater(){}
+
     @Override
-    public void execute() {
-        ConsoleCreation create = new ConsoleCreation();
-        create.execute();
-        for (Worker worker : repo.map.values()){
-            if (worker.compareTo(create.getWorker()) < 0){
-                create.getWorker().setId(worker.getId());
-                repo.map.remove(worker.getId());
-                break;
-            }
+    public void execute(String argument, Object commandObjectArgument) {
+        try {
+            if (!argument.isEmpty() || commandObjectArgument == null)
+                throw new WrongArgumentsException("Необходимо ввести работника");
+            WorkerPacket workerPacket = (WorkerPacket) commandObjectArgument;
+            Worker.setCounter(getCounter() + 1);
+            Worker worker = new Worker(Worker.getCounter(),
+                    workerPacket.getName(),
+                    workerPacket.getCoordinates(),
+                    workerPacket.getCreationDate(),
+                    workerPacket.getSalary(),
+                    workerPacket.getStartDate(),
+                    workerPacket.getEndDate(),
+                    workerPacket.getStatus(),
+                    workerPacket.getOrganization());
+            loader.removeGreater(worker);
+        }catch (Exception e){
+            ResponseOutputer.appendln(e.getMessage());
         }
     }
-    /**
-     Returns a String representation of the command, including its name and purpose.
-     @return a String representation of the command
-     */
+
     @Override
     public String toString(){
         return "remove_if_greater null {element} : удалить значение по ключу если новое значение больше старого";

@@ -26,22 +26,11 @@ public class ExecuteScript implements ArgumentCommand{
     static Stack<String> stackWithFiles = new Stack<>();
     static Stack<Scanner> stackWithScanners = new Stack<>();
 
-    private String link;
-    private String fileName;
-    private FileReader fileReader;
+public class ExecuteScript implements Command {
+    Loader loader;
+    public ExecuteScript(Loader loader){this.loader = loader;}
+    public ExecuteScript(){}
 
-    private Loader loader;
-    private File file;
-
-
-    /**
-
-     Executes the script by reading commands from the specified file,
-
-     checking for recursion, and executing each command using a CommandReader object.
-
-     If recursion is detected, an exception is thrown.
-     */
     @Override
     public void execute() {
         //Loader.setExecuteWorks(true);
@@ -141,7 +130,10 @@ public class ExecuteScript implements ArgumentCommand{
         //   System.out.println(e.getMessage());
         //}
     }
-
+    @Override
+    public String toString(){
+        return "execute_script : считать и исполнить скрипт из указанного файла";
+    }
 
     /**
      Returns a String representation of the command, including its name and purpose.

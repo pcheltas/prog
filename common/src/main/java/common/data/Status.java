@@ -1,11 +1,9 @@
 package worker;
 
-/**
 
- The Status enum represents the possible statuses that an employee can have.
- Each status has a description associated with it.
- */
-public enum Status {
+import java.io.Serializable;
+
+public enum Status implements Serializable {
 
     FIRED ("уволен"),
     HIRED ("нанят"),
@@ -14,11 +12,7 @@ public enum Status {
     PROBATION("на испытательном сроке");
 
     String description;
-    /**
 
-     Constructs a new status with the given description.
-     @param description the description of the status.
-     */
     Status (String description){
         this.description =description;
     }
@@ -31,12 +25,7 @@ public enum Status {
         return description;
     }
 
-    /**
 
-     Returns the Status enum constant with the specified description.
-     @param name the description of the Status constant to be returned.
-     @return the Status enum constant with the specified description, or null if no such constant exists.
-     */
     public static Status fromString(String name){
         for (Status statushere : Status.values()) {
             if (statushere.getDescription().equals(name)) {

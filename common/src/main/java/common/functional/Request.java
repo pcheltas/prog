@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 
-/**
- * Class for get request value.
- */
+
 public class Request implements Serializable {
     private String commandName;
     private String commandStringArgument;
@@ -29,30 +27,21 @@ public class Request implements Serializable {
         this("", "");
     }
 
-    /**
-     * @return Command name.
-     */
+
     public String getCommandName() {
         return commandName;
     }
 
-    /**
-     * @return Command string argument.
-     */
+
     public String getCommandStringArgument() {
         return commandStringArgument;
     }
 
-    /**
-     * @return Command object argument.
-     */
+
     public Object getCommandObjectArgument() {
         return commandObjectArgument;
     }
 
-    /**
-     * @return Is this request empty.
-     */
     public boolean isEmpty() {
         return commandName.isEmpty() && commandStringArgument.isEmpty() && commandObjectArgument == null;
     }

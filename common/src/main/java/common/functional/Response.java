@@ -10,9 +10,7 @@ public class Response implements Serializable{
         this.responseBody = responseBody;
     }
 
-    /**
-     * @return Response body.
-     */
+
     public String getResponseBody() {
         return responseBody;
     }

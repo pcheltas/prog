@@ -3,6 +3,7 @@ package worker;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import common.data.Coordinates;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -11,11 +12,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
 
- The Worker class represents a worker. It implements the Comparable interface for sorting workers by name length.
- */
-public class Worker implements Comparable<Worker>{
+public class Worker implements Comparable<Worker>, Serializable {
     private static int counter=0;
     private int id;//Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -33,8 +31,8 @@ public class Worker implements Comparable<Worker>{
     public Worker(@JsonProperty("id") int id, @JsonProperty("name") String name,
                   @JsonProperty("coordinates")Coordinates coordinates, @JsonProperty("creationDate")Date creationDate,
                   @JsonProperty("salary")Float salary, @JsonProperty("startDate")ZonedDateTime startDate,
-                  @JsonProperty("endDate")LocalDateTime endDate, @JsonProperty("status")Status status,
-                  @JsonProperty("organization")Organization organization){
+                  @JsonProperty("endDate")LocalDateTime endDate, @JsonProperty("status") Status status,
+                  @JsonProperty("organization") Organization organization){
 
         this.id = id;
         this.name = name;
@@ -49,30 +47,6 @@ public class Worker implements Comparable<Worker>{
 
     public Worker() {
     }
-
-//    public Worker(String name, Coordinates coordinates, Float salary, Status status){
-//        this.id = counter++;
-//        setCounter(counter++);
-//        this.name = name;
-//        this.coordinates = coordinates;
-//        this.status = status;
-//        this.creationDate = new Date();
-//        this.salary = salary;
-//    }
-//    public Worker(Boolean console, int id, String name, Coordinates coordinates, Float salary,
-//                  java.time.ZonedDateTime startDate, java.time.LocalDateTime endDate, Status status, Organization organization){
-//        this.id = id;
-//        this.name = name;
-//        this.coordinates = coordinates;
-//        this.status = status;
-//        this.creationDate = new Date();
-//        this.salary = salary;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.organization = organization;
-//    }
-
-
 
     public  int getId() {
         return id;
@@ -305,5 +279,33 @@ public class Worker implements Comparable<Worker>{
     @Override
     public int compareTo(Worker o) {
         return this.name.length()-o.getName().length();
+    }
+
+    @Override
+    public String toString(){
+        if (organization == null) {
+            return
+                    "\nID: " + getId() +
+                            "\nNAME: " + getName() +
+                            "\nCOORDINATES: " + coordinates.toString() +
+                            "\nCREATIONDATE: " + getCreationDate() +
+                            "\nSALARY: " + getSalary() +
+                            "\nSTARTDATE: " + getStartDate() +
+                            "\nENDDATE: " + getEndDate() +
+                            "\nSTATUS: " + getStatus().getDescription();
+        }else{
+            return
+                    "\nID: " + getId() +
+                            "\nNAME: " + getName() +
+                            "\nCOORDINATES: " + coordinates.toString() +
+                            "\nCREATIONDATE: " + getCreationDate() +
+                            "\nSALARY: " + getSalary() +
+                            "\nSTARTDATE: " + getStartDate() +
+                            "\nENDDATE: " + getEndDate() +
+                            "\nORGANIZATION: " + organization.toString() +
+                            "\nSTATUS: " + getStatus().getDescription();
+
+        }
+
     }
 }

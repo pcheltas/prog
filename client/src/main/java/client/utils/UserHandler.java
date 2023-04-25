@@ -35,23 +35,17 @@ public class UserHandler {
             switch (command) {
                 case "":
                     return CheckCode.ERROR;
-                case "addElement":
-                    if (!commandArgument.isEmpty()) throw new WrongCommandException();
-                    return CheckCode.OBJECT;
-                case "add_if_min":
-                    if (!commandArgument.isEmpty()) throw new WrongCommandException();
-                    return CheckCode.OBJECT;
                 case "clear":
                     if (!commandArgument.isEmpty()) throw new WrongCommandException();
                     break;
                 case "execute_script":
                     if (commandArgument.isEmpty()) throw new WrongCommandException();
                     return CheckCode.SCRIPT;
-                case "filter_greater_than_status":
-                    if (commandArgument.isEmpty()) throw new WrongCommandException();
-                    break;
-                case "group_counting_by_status":
+                case "exit":
                     if (!commandArgument.isEmpty()) throw new WrongCommandException();
+                    System.exit(0);
+                case "filter_greater_than_salary":
+                    if (commandArgument.isEmpty()) throw new WrongCommandException();
                     break;
                 case "help":
                     if (!commandArgument.isEmpty()) throw new WrongCommandException();
@@ -59,28 +53,33 @@ public class UserHandler {
                 case "info":
                     if (!commandArgument.isEmpty()) throw new WrongCommandException();
                     break;
-                case "print_field_ascending_person":
+                case "insert":
+                    if (!commandArgument.isEmpty()) throw new WrongCommandException();
+                    return CheckCode.OBJECT;
+                case "print_field_descending_end_date":
                     if (!commandArgument.isEmpty()) throw new WrongCommandException();
                     break;
-                case "remove_element_by_id":
+                case "remove_any_by_end_date":
                     if (commandArgument.isEmpty()) throw new WrongCommandException();
                     return CheckCode.OBJECT;
-                case "remove_greater":
-                    if (!commandArgument.isEmpty()) throw new WrongCommandException();
+                case "remove_if_greater":
+                    if (commandArgument.isEmpty()) throw new WrongCommandException();
+                    return CheckCode.OBJECT;
+                case "remove_key":
+                    if (commandArgument.isEmpty()) throw new WrongCommandException();
+                    return CheckCode.OBJECT;
+                case "replace_if_greater":
+                    if (commandArgument.isEmpty()) throw new WrongCommandException();
+                    return CheckCode.OBJECT;
+                case "replace_if_lowe":
+                    if (commandArgument.isEmpty()) throw new WrongCommandException();
                     return CheckCode.OBJECT;
                 case "show":
-                    if (!commandArgument.isEmpty()) throw new WrongCommandException();
-                    break;
-                case "sort":
                     if (!commandArgument.isEmpty()) throw new WrongCommandException();
                     break;
                 case "update_by_id":
                     if (commandArgument.isEmpty()) throw new WrongCommandException();
                     return CheckCode.UPDATE_OBJECT;
-                case "exit":
-                    if (!commandArgument.isEmpty()) throw new WrongCommandException();
-                    System.exit(0);
-                    break;
                 default:
                     Printer.println("Команда '" + command + "' не найдена. Наберите 'help' для справки.");
                     return CheckCode.ERROR;
@@ -96,12 +95,14 @@ public class UserHandler {
         CommunicationControl worker = new CommunicationControl(chosenScanner);
         if (fileMode()) worker.setFileMode();
         return new WorkerPacket(
-                worker.setName(),
-                worker.setCoordinates(),
-                worker.setSalary(),
-                worker.choosePosition(),
-                worker.chooseStatus(),
-                worker.setPerson()
+                communicationControl.setName(),
+                communicationControl.setCoordinates(),
+                communicationControl.setCreationDate(),
+                communicationControl.setSalary(),
+                communicationControl.setStartDate(),
+                communicationControl.setEndDate(),
+                communicationControl.setStatus(),
+                communicationControl.setOrganization()
         );
     }
 

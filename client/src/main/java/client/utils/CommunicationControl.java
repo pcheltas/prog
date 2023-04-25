@@ -4,29 +4,20 @@ import common.exceptions.*;
 import common.data.*;
 
 import java.io.FileNotFoundException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-/**
- * The CommunicationControl class provides methods for communicating with the user through the console.
- * It allows setting and getting user's personal information, such as name, height and passport ID.
- */
+
 
 public class CommunicationControl {
     public Scanner scanner;
     private boolean loop = true;
     public static boolean flagForScr;
 
-    /**
-     * Constructs a new CommunicationControl object with the given scanner.
-     *
-     * @param scanner the scanner object to be used for reading input from the console
-     */
 
     public CommunicationControl(Scanner scanner) {
         this.scanner = scanner;
@@ -37,50 +28,32 @@ public class CommunicationControl {
         flagForScr = true;
     }
 
-    /**
-     * Sets marine asker mode to 'User Mode'.
-     */
+
     public void setUserMode() {
         flagForScr = false;
     }
 
 
-    /**
-     * Checks if the given string contains only digits or letters.
-     *
-     * @param str        the string to be checked
-     * @param onlyDigits true if the string should contain only digits, false otherwise
-     * @return true if the string contains only digits or letters, false otherwise
-     */
+
     public static boolean containsOnlyDigitsOrLetters(String str, boolean onlyDigits) {
-        if (str == null || str.isEmpty()) {
+        if (str.isBlank()) {
             return false;
         }
         String regex = onlyDigits ? "^\\d+$" : "^[a-zA-Z]+$";
         return str.matches(regex);
     }
 
-    /**
-     * Sets the value of the loop flag to the opposite of its current value.
-     */
+
     public void setUnsetLoop() {
         this.loop = !this.loop;
     }
 
-    /**
-     * Changes the scanner object to read input from the given input stream.
-     */
+
     public void changeScanner(Scanner scanner) throws FileNotFoundException {
         this.scanner = scanner;
     }
 
 
-    /**
-     * Prompts the user to enter their name and returns it.
-     *
-     * @return the user's name as a string
-     * @throws InputException if the user enters an invalid name or if the loop flag is set to false
-     */
     public String setName() throws InputException {
         String name;
         while (true) {
@@ -104,143 +77,22 @@ public class CommunicationControl {
         }
 
     }
-
-    /**
-     * Prompts the user to enter their height and returns it.
-     *
-     * @return the user's height as a long
-     * @throws InputException if the user enters an invalid height or if the loop flag is set to false
-     */
-
-    private long setHeight() throws InputException {
-        while (true) {
-            try {
-                System.out.print("Введите рост: ");
-                String line = scanner.nextLine();
-                long height = Long.parseLong(line);
-                if ((height <= 0) || (height > 400)) {
-                    throw new WrongArgumentsException("Высота не может быть меньше или равна нулю");
-                }
-                flagForScr = true;
-                return height;
-            } catch (Exception e) {
-                System.out.println("Некорректный ввод. Попробуйте еще раз.");
-            } finally {
-                if ((!loop) && (!flagForScr)) {
-                    throw new InputException();
-
-                }
-                flagForScr = false;
-            }
-        }
-    }
-
-    /**
-     * Private method for setting the passport ID of a Person object.
-     *
-     * @return String containing the passport ID of the person.
-     * @throws InputException if the input is invalid or empty.
-     */
-
-    private String setPassportID() throws InputException {
-        while (true) {
-            try {
-                System.out.print("Введите номер паспорта: ");
-                String passportID = scanner.nextLine().trim();
-                if (passportID.isEmpty()) {
-                    throw new EmptyInputException("Номер паспорта не может быть пустым");
-                }
-                if ((!passportID.matches("\\d+") || (passportID.length() != 6))) {
-                    throw new WrongArgumentsException("Номер паспорта должен содержать только цифры(6 цифр)");
-                }
-                flagForScr = true;
-                return passportID;
-            } catch (Exception e) {
-                System.out.println("Некорректный ввод. Попробуйте еще раз.");
-            } finally {
-                if ((!loop) && (!flagForScr)) {
-                    throw new InputException();
-
-                }
-                flagForScr = false;
-            }
-        }
-    }
-
-    /**
-     * Private method for setting the birthday of a Person object.
-     *
-     * @return LocalDateTime object containing the birth date of the person.
-     * @throws InputException if the input is invalid or empty.
-     */
-
-    private LocalDateTime setBirthday() throws InputException {
-        while (true) {
-            try {
-                System.out.print("Введите дату рождения в формате ГГГГ-ММ-ДД: ");
-                String birthdayStr = scanner.nextLine().trim();
-                if (birthdayStr.isEmpty()) throw new IllegalArgumentException();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", new Locale("ru", "Ru"));
-                LocalDateTime bd = LocalDate.parse(birthdayStr, formatter).atStartOfDay();
-                if (bd.isAfter(LocalDate.now().atStartOfDay())) throw new WrongArgumentsException();
-                flagForScr = true;
-                return bd;
-            } catch (WrongArgumentsException e) {
-                System.out.println(e.getMessage());
-            } catch (DateTimeParseException e) {
-                System.out.println("неверный формат даты!");
-            } catch (Exception e) {
-                System.out.println("Некорректный ввод. Попробуйте еще раз.");
-            } finally {
-                if ((!loop) && (!flagForScr)) {
-                    throw new InputException();
-
-                }
-                flagForScr = false;
-            }
-        }
-    }
-
-    /**
-     * Public method for setting the information of a Person object.
-     *
-     * @return Person object containing the information of a person.
-     * @throws InputException if the input is invalid or empty.
-     */
-
-    public Person setPerson() throws InputException {
-        try {
-            LocalDateTime bDay = setBirthday();
-            long height = setHeight();
-            String passportID = setPassportID();
-            return new Person(bDay, height, passportID, setLocation());
-        } catch (Exception e) {
-            throw new InputException();
-        }
-    }
-
-    /**
-     * Public method for setting the X-coordinate of a Location object.
-     *
-     * @return Integer containing the X-coordinate of the location.
-     * @throws InputException if the input is invalid or empty.
-     */
-    public Integer setCoodrinateX() throws InputException {
-        int coordX;
+    public Float setCoodrinateX() throws InputException {
+        float coordX;
         String line;
         while (true) {
             try {
-                System.out.println("Введите координату X: ");
+                System.out.println("Введите float координату X: ");
                 line = scanner.nextLine().trim();
-                if (line.equals("")) throw new EmptyInputException("не может быть пустым");
-                coordX = Integer.parseInt(line);
-                if (coordX > 468) throw new InputException();
+                if (line.isBlank()) throw new EmptyInputException("не может быть пустым");
+                coordX = Float.parseFloat(line);
+                if (coordX > 862) throw new InputException();
                 flagForScr = true;
                 return coordX;
             } catch (EmptyInputException e) {
                 System.out.println(e.getMessage());
             } catch (InputException e) {
-                System.out.println("превышенно значение (max: 468)");
+                System.out.println("превышенно значение (max: 862)");
             } catch (NumberFormatException e) {
                 System.out.println("должно быть числом а еще и целым !!!");
             } finally {
@@ -255,22 +107,16 @@ public class CommunicationControl {
 
     }
 
-    /**
-     * Reads and validates the user input for the Y-coordinate
-     *
-     * @return an Integer representing the Y-coordinate entered by the user
-     * @throws InputException if the input is not valid or empty
-     */
-    public Integer setCoodrinateY() throws InputException {
-        Integer coordY;
+    public Long setCoodrinateY() throws InputException {
+        long coordY;
         String line;
         while (true) {
             try {
                 System.out.println("Введите координату Y: ");
                 line = scanner.nextLine().trim();
                 if (line.equals("")) throw new EmptyInputException();
-                coordY = Integer.parseInt(line);
-                if (coordY <= -922) throw new InputException();
+                coordY = Long.parseLong(line);
+                if (coordY <= 332) throw new InputException();
                 flagForScr = true;
                 return coordY;
             } catch (EmptyInputException e) {
@@ -288,22 +134,15 @@ public class CommunicationControl {
         }
 
     }
-
-    /**
-     * Reads and validates the user input for the salary
-     *
-     * @return a Double representing the salary entered by the user
-     * @throws InputException if the input is not valid or empty
-     */
-    public Double setSalary() throws InputException {
+    public Float setSalary() throws InputException {
         String line;
-        double salary;
+        Float salary;
         while (true) {
             try {
                 System.out.println("введите з/п: ");
                 line = scanner.nextLine().trim();
                 if (line.equals("")) throw new EmptyInputException();
-                salary = Double.parseDouble(line);
+                salary = Float.parseFloat(line);
                 if (salary <= 0) throw new InputException();
                 flagForScr = true;
                 return salary;
@@ -323,16 +162,117 @@ public class CommunicationControl {
 
     }
 
-    /**
-     * Reads and validates the user input for the coordinates
-     *
-     * @return a Coordinates object representing the coordinates entered by the user
-     * @throws InputException if the input is not valid or empty
-     */
-    public Coordinates setCoordinates() throws InputException {
+    public ZonedDateTime setStartDate() throws InputException {
+        while (true) {
+            try {
+                System.out.print("Введите дату принятия на работу в формате 'гггг мм дд' " +
+                        "(через пробел, без других символов)");
+                String date = scanner.nextLine().trim();
+                String regex = "^\\d{4}\\s(0[1-9]|1[0-2])\\s(0[1-9]|[12]\\d|3[01])$";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(date);
+                if (date.isBlank()) throw new EmptyInputException("Введенная дата не " +
+                        "соответствует формату");
+                if (date!=null & !matcher.matches()) throw new IllegalArgumentException("Введенная дата не " +
+                        "соответствует формату");
+
+                System.out.print("Введите время принятия на работу в формате 'чч мм' по московскому времени" +
+                        "(через пробел, без других символов)");
+                String time = scanner.nextLine().trim();
+                String regex1 = "^([01]\\d|2[0-3])\\s[0-5]\\d$";
+                Pattern pattern1 = Pattern.compile(regex1);
+                Matcher matcher1 = pattern1.matcher(time);
+                if (!matcher1.matches()) throw new IllegalArgumentException("Введенное время не соотвествует формату");
+
+                ZoneId zone = ZoneId.of("Europe/Moscow");
+                LocalDate dates = LocalDate.of(Integer.parseInt(date.trim().split(" ")[0]),
+                        Integer.parseInt(date.trim().split(" ")[1]),
+                        Integer.parseInt(date.trim().split(" ")[2]));
+                LocalTime times = LocalTime.of(Integer.parseInt(time.trim().split(" ")[0]),
+                        Integer.parseInt(time.trim().split(" ")[1]));
+                ZonedDateTime startDate = ZonedDateTime.of(dates, times, zone);
+
+                flagForScr = true;
+                return startDate;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } finally {
+                if ((!loop) && (!flagForScr)) {
+                    throw new InputException();
+
+                }
+                flagForScr = false;
+            }
+        }
+    }
+    public LocalDateTime setEndDate() throws InputException {
+        while (true) {
+            try {
+                System.out.print("Введите дату увольнения в формате 'гггг мм дд' " +
+                        "(через пробел, без других символов)");
+                String date = scanner.nextLine().trim();
+                String regex = "^\\d{4}\\s(0[1-9]|1[0-2])\\s(0[1-9]|[12]\\d|3[01])$";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(date);
+                if (date.isBlank() || !matcher.matches()) throw new IllegalArgumentException("Введенная дата не соответствует формату");
+
+                System.out.println("Введите время увольнения в формате 'чч мм' по московскому времени" +
+                        "(через пробел, без других символов)");
+                String time = scanner.nextLine().trim();
+                String regex1 = "^([01]\\d|2[0-3])\\s[0-5]\\d$";
+                Pattern pattern1 = Pattern.compile(regex1);
+                Matcher matcher1 = pattern1.matcher(time);
+                if (!matcher1.matches()) throw new IllegalArgumentException("Введенное время не соотвествует формату");
+
+                LocalDateTime endD = LocalDateTime.of(Integer.parseInt(date.trim().split(" ")[0]),
+                        Integer.parseInt(date.trim().split(" ")[1]),
+                        Integer.parseInt(date.trim().split(" ")[2]),
+                        Integer.parseInt(time.trim().split(" ")[0]),
+                        Integer.parseInt(time.trim().split(" ")[0]));
+
+                flagForScr = true;
+                return endD;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } finally {
+                if ((!loop) && (!flagForScr)) {
+                    throw new InputException();
+
+                }
+                flagForScr = false;
+            }
+        }
+    }
+
+
+    public Status setStatus() throws InputException {
         try {
-            Integer x;
-            int y;
+            System.out.println("Введите статус (один из предложенных):");
+            ArrayList s = new ArrayList();
+            for (Status i : Status.values()) {
+                s.add(i.getDescription());
+                System.out.println(i.getDescription());
+            }
+            String status = scanner.nextLine().trim();
+            if (status.isBlank())
+                throw new IllegalArgumentException("Введенный статус не может быть пустым");
+            if (!s.contains(status)) throw new IllegalArgumentException("Такого статуса не существует");
+            return Status.fromString(status);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new InputException();
+        }
+    }
+
+
+
+
+
+
+     public Coordinates setCoordinates() throws InputException {
+        try {
+            Float x;
+            long y;
             x = setCoodrinateX();
             y = setCoodrinateY();
 
@@ -344,127 +284,59 @@ public class CommunicationControl {
 
     }
 
-    /**
-     * Reads and validates the user input for the location
-     *
-     * @return a Location object representing the location entered by the user
-     * @throws InputException if the input is not valid or empty
-     */
 
-    public Location setLocation() throws InputException {
+
+    public Organization setOrganization() throws InputException {
+        Organization org = new Organization();
         String name;
         String line;
         float x;
         long y;
         int z;
-
-        while (true) {
-            try {
-
-                System.out.println("Введите координаты x (Float)");
-                line = scanner.nextLine().trim();
-                if (line.equals("")) throw new EmptyInputException();
-                x = Float.parseFloat(line);
-
-                System.out.println("Введите координаты y (Long)");
-                line = scanner.nextLine().trim();
-                if (line.equals("")) throw new EmptyInputException();
-                y = Long.parseLong(line);
-
-                System.out.println("Введите координаты z (Integer)");
-                line = scanner.nextLine().trim();
-                if (line.equals("")) throw new EmptyInputException();
-                z = Integer.parseInt(line);
-
-                System.out.println("Название локации: ");
-                name = scanner.nextLine().trim();
-                if (name.equals("")) throw new EmptyInputException();
-                flagForScr = true;
-                return new Location(x, y, z, name);
-            } catch (EmptyInputException e) {
-                //err - ввели пустоту
-            } catch (NumberFormatException e) {
-                //Console.err должно быть числом !!1
-            } finally {
-                if ((!loop) && (!flagForScr)) {
-                    throw new InputException();
-
+        try {
+            while (true) {
+                while (true) {
+                    try {
+                        System.out.println("Введите полное название комании");
+                        org.setFullName(scanner.nextLine().trim());
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
-                flagForScr = false;
+                while (true) {
+                    try {
+                        System.out.println("Введите ежегодный оборот компании");
+                        org.setAnnualTurnover(scanner);
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                while (true) {
+                    try {
+                        System.out.println("Введите количество работников в компании");
+                        org.setEmployeesCount(scanner);
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                break;
             }
+            return org;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+        return org;
+    }
+    public Date setCreationDate(){
+        Date creationDate = new Date();
+        return creationDate;
     }
 
-    /**
-     * Reads and validates the user input for the position
-     *
-     * @return a Position enum representing the position entered by the user
-     * @throws InputException if the input is not valid or empty
-     */
-    public Position choosePosition() throws InputException {
-        Position position;
-        String setPos;
-        while (true) {
-            try {
-
-                System.out.println(Position.nameList());
-                System.out.println("выбирайте");
-                setPos = scanner.nextLine().trim();
-                position = Position.valueOf(setPos.toUpperCase());
-                flagForScr = true;
-                return position;
-            } catch (Exception e) {
-                System.out.println("неверные данные");
-            } finally {
-                if ((!loop) && (!flagForScr)) {
-                    throw new InputException();
-
-                }
-                flagForScr = false;
-            }
-        }
 
 
-    }
-
-    /**
-     * Reads and validates the user input for the status
-     *
-     * @return a Status enum representing the status entered by the user
-     * @throws InputException if the input is not valid or empty
-     */
-
-    public Status chooseStatus() throws InputException {
-        Status status;
-        String setStat;
-        while (true) {
-            try {
-
-                System.out.println(Status.nameList());
-                System.out.println("какую штуку выберите");
-                setStat = scanner.nextLine().trim();
-                status = Status.valueOf(setStat.toUpperCase());
-                flagForScr = true;
-                return status;
-            } catch (NoSuchElementException e) {
-                System.out.println("нет такого элемента");
-            } catch (Exception e) {
-                System.out.println("ошибка данных");
-            } finally {
-                if ((!loop) && (!flagForScr)) {
-                    throw new InputException();
-
-                }
-                flagForScr = false;
-            }
-        }
-    }
-
-    /**
-     * Asks the user to confirm a choice
-     *
-     * @return true if the user confirms, false otherwise
-     */
     public boolean confirm() {
         if (loop) {
             String line;
@@ -477,11 +349,7 @@ public class CommunicationControl {
     }
 
 
-    /**
-     * Reads and returns additional information entered by the user
-     *
-     * @return a String representing the additional information entered by the user
-     */
+
     public String setEnotherInfo() {
         String line;
         line = scanner.nextLine().trim();
